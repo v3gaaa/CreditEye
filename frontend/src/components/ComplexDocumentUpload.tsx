@@ -13,10 +13,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ComplexDocumentUpload() {
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [selectedFiles, setSelectedFiles] = useState([])
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 
-  const handleFileSelect = (event) => {
-    const files = Array.from(event.target.files)
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
     setSelectedFiles(files)
     simulateUpload()
   }
@@ -36,7 +36,7 @@ export default function ComplexDocumentUpload() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-100 to-indigo-50 p-8">
       <header className="mb-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold text-gray-800">Document Management System</h1>
+          <h1 className="text-4xl font-bold text-gray-800">Document Management Systemcñ</h1>
           <div className="flex items-center space-x-4">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
