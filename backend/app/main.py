@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, send_info, basic_request, review_info, get_document, edit_risk_score, approve_reject_request, get_all_requests, vision, update_review_info
+from app.api import health, send_info, basic_request, review_info, get_document, edit_risk_score, approve_reject_request, get_all_requests, vision, update_review_info, review_description_openai
 import uvicorn
 from dotenv import load_dotenv
 import os
@@ -29,6 +29,7 @@ app.include_router(edit_risk_score.router)
 app.include_router(approve_reject_request.router)
 app.include_router(get_all_requests.router)
 app.include_router(update_review_info.router)
+app.include_router(review_description_openai.router)
 
 if __name__ == "__main__":
     port = os.getenv("PORT", 5555)
