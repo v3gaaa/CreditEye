@@ -1,14 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, FilterIcon, PlusIcon } from '@heroicons/react/outline'
 
 export default function Dashboard() {
-  const [applications, setApplications] = useState([
-    { id: 1, name: 'John Doe', status: 'Under Review', riskScore: 0, hasIssues: false },
-    { id: 2, name: 'Jane Smith', status: 'Submitted', riskScore: 60, hasIssues: true },
-  ])
+  const [applications, setApplications] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showIssuesOnly, setShowIssuesOnly] = useState(false)
+
+  useEffect(() => {
+    // Fetch all requests from the backend
+    const fetchApplications = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/get-all-requests') // Update with your API URL
+        const data = await response.json()
+        
+        // Map the data to match the structure used in the component
+        const mappedApplications = data.map(app => ({
+          id: app.id,
+          name: app.name || 'Unknown',
+          status: app.status || 'Unknown',
+          riskScore: app.risk_score,
+          hasIssues: app.risk_score > 50
+        }))
+        
+        setApplications(mappedApplications)
+      } catch (error) {
+        console.error('Failed to fetch applications:', error)
+      }
+    }
+
+    fetchApplications()
+  }, [])
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value)
@@ -78,8 +100,10 @@ export default function Dashboard() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    app.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' : 
-                    app.status === 'Submitted' ? 'bg-green-100 text-green-800' : 
+                    app.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 
+                    app.status === 'Approved' ? 'bg-green-100 text-green-800' : 
+                    app.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                    app.status === 'More Info' ? 'bg-yellow-100 text-yellow-800' :
                     'bg-gray-100 text-gray-800'
                   }`}>
                     {app.status}

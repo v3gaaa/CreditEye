@@ -1,33 +1,52 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CheckCircle, XCircle, AlertCircle, AlertTriangle, Loader } from 'lucide-react'
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
 
-export default function ApplicationReview({ id = '123' }) {
+export default function ApplicationReview() {
+  const { id } = useParams()
   const [application, setApplication] = useState(null)
   const [applicationOverview, setApplicationOverview] = useState(null)
   const [loadingOverview, setLoadingOverview] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [editingRiskScore, setEditingRiskScore] = useState(false)
+  const [newRiskScore, setNewRiskScore] = useState(null)
+  const { toast } = useToast()
 
   useEffect(() => {
-    // Simulating API call
-    setApplication({
-      id,
-      name: 'John Doe',
-      email: 'john@example.com',
-      income: '$50,000',
-      creditScore: 720,
-      riskScore: 75,
-      documents: [
-        { type: 'ID', issues: false },
-        { type: 'Proof of Income', issues: false },
-        { type: 'Bank Statement', issues: false },
-      ]
-    })
+    const fetchApplicantInfo = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/get-review-info/${id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch applicant information')
+        }
+        const data = await response.json()
+
+        setApplication({
+          id,
+          name: data.name || 'Unknown',
+          email: data.email || 'Unknown',
+          income: `$${data.income.toLocaleString()}`,
+          riskScore: data.credit_score || 0,
+          documents: Object.entries(data.documents).map(([type, details]) => ({
+            type,
+            issues: !details.legible,
+          })),
+        })
+        setNewRiskScore(75) // Initial risk score
+      } catch (error) {
+        console.error('Error fetching applicant information:', error)
+      }
+    }
+
+    fetchApplicantInfo()
   }, [id])
 
   const getRiskScoreColor = (score) => {
@@ -50,19 +69,56 @@ export default function ApplicationReview({ id = '123' }) {
 
     setLoadingOverview(true)
 
-    // Simulating API call for generating application overview
     setTimeout(() => {
       setApplicationOverview({
-        shouldApprove: true, // Placeholder boolean value
-        explanation: 'This decision is based on a strong credit history and a low debt-to-income ratio.', // Placeholder explanation
-        relevantData: { // Placeholder relevant data
+        shouldApprove: true,
+        explanation: 'This decision is based on a strong credit history and a low debt-to-income ratio.',
+        relevantData: {
           'Income Verified': 'Yes',
           'Debt-to-Income Ratio': 'Low',
           'Credit History': 'Good',
         },
       })
       setLoadingOverview(false)
-    }, 2000) // Simulating a delay
+    }, 2000)
+  }
+
+  const handleRiskScoreChange = (e) => {
+    setNewRiskScore(e.target.value)
+  }
+
+  const handleRiskScoreUpdate = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/edit-risk-score/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ risk_score: newRiskScore }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update risk score')
+      }
+
+      const data = await response.json()
+      if (data.status === 'success') {
+        setApplication((prev) => ({ ...prev, riskScore: newRiskScore }))
+        toast({
+          title: "Risk Score Updated",
+          description: "The risk score has been successfully updated.",
+        })
+      } else {
+        throw new Error(data.message || 'Failed to update risk score')
+      }
+    } catch (error) {
+      console.error('Error updating risk score:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update risk score. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -87,17 +143,33 @@ export default function ApplicationReview({ id = '123' }) {
               <p className="text-sm font-medium text-muted-foreground">Income</p>
               <p className="text-lg font-semibold">{application?.income}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Credit Score</p>
-              <p className="text-lg font-semibold">{application?.creditScore}</p>
-            </div>
           </div>
           
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-2">Risk Score</p>
-            <Badge variant="outline" className={getRiskScoreColor(application?.riskScore)}>
-              {application?.riskScore}
-            </Badge>
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline" className={getRiskScoreColor(application?.riskScore)}>
+                {application?.riskScore}
+              </Badge>
+              {editingRiskScore ? (
+                <div className="flex items-center space-x-2">
+                  <Input
+                    type="number"
+                    value={newRiskScore}
+                    onChange={handleRiskScoreChange}
+                    className="w-20"
+                    min="0"
+                    max="100"
+                  />
+                  <Button onClick={handleRiskScoreUpdate} variant="primary">Update</Button>
+                  <Button onClick={() => setEditingRiskScore(false)} variant="ghost">Cancel</Button>
+                </div>
+              ) : (
+                <Button onClick={() => setEditingRiskScore(true)} variant="secondary">
+                  Edit Risk Score
+                </Button>
+              )}
+            </div>
           </div>
           
           <div>
@@ -183,7 +255,6 @@ export default function ApplicationReview({ id = '123' }) {
         </Button>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-1/3">

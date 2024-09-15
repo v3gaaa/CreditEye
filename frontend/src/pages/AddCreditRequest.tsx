@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Upload, DollarSign, Mail, Phone, User, FileText, CreditCard } from 'lucide-react'
-import axios from 'axios'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -40,30 +39,33 @@ export default function AddCreditRequest() {
     setLoading(true)
 
     const formData = new FormData()
-    
-    Object.keys(customerInfo).forEach(key => {
-      formData.append(key, customerInfo[key])
-    })
 
-    const documentsObj = []
+    // Agregar la información del cliente al formData
+    formData.append('name', customerInfo.name)
+    formData.append('email', customerInfo.email)
+    formData.append('phone', customerInfo.phone)
+    formData.append('annual_income', customerInfo.annual_income)
 
+    // Agregar los documentos al formData
     Object.keys(documents).forEach(key => {
       if (documents[key]) {
-        documentsObj.push(documents[key])
+        formData.append('documents', documents[key])
       }
     })
 
-    formData.append('documents', JSON.stringify(documentsObj))
-
     try {
-      const response = await axios.post('https://d23e-131-178-102-188.ngrok-free.app/send-info', formData)
+      const response = await fetch('http://localhost:8000/send-info', {
+        method: 'POST',
+        body: formData,
+      })
 
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error('Failed to submit credit request')
       }
 
-      const data = response.data
+      const data = await response.json()
       setResult(data)
+
       toast({
         title: "Credit Request Submitted",
         description: "Your credit request has been successfully submitted.",
@@ -222,7 +224,12 @@ export default function AddCreditRequest() {
           ) : (
             <>
               <p className="text-green-600">Credit request submitted successfully!</p>
-              <p className="text-sm text-muted-foreground mt-2">Application ID: {result.applicationId}</p>
+              <p className="text-sm text-muted-foreground mt-2">Application ID: {result.request_id}</p>
+              {result.uploaded_files && result.uploaded_files.map(file => (
+                <p key={file.file_id} className="text-sm text-muted-foreground">
+                  {file.filename} - <a href={file.file_url} target="_blank" className="text-blue-600">View File</a>
+                </p>
+              ))}
             </>
           )}
         </CardContent>
