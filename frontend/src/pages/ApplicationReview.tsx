@@ -17,8 +17,8 @@ export default function ApplicationReview() {
   const [showModal, setShowModal] = useState(false)
   const [editingRiskScore, setEditingRiskScore] = useState(false)
   const [newRiskScore, setNewRiskScore] = useState(null)
-  const { toast } = useToast()
   const [previewUrl, setPreviewUrl] = useState(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     const fetchApplicantInfo = async () => {
@@ -190,7 +190,6 @@ export default function ApplicationReview() {
         throw new Error('Failed to fetch document')
       }
 
-      // Convert the response to a blob URL for previewing the document
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       setPreviewUrl(url)
@@ -204,6 +203,53 @@ export default function ApplicationReview() {
     }
   }
 
+  const handleDocumentUpload = async (e, fileId) => {
+    const newDocument = e.target.files[0]
+    if (!newDocument) return
+
+    const formData = new FormData()
+    formData.append('name', application.name)
+    formData.append('email', application.email)
+    formData.append('phone', application.phone)
+    formData.append('annual_income', parseFloat(application.income.replace(/[^\d.]/g, '')))
+    formData.append('risk_score', application.riskScore)
+    formData.append('status', application.status)
+    formData.append('documents', newDocument)
+
+    try {
+      const response = await fetch(`http://localhost:8000/update-review-info/${id}/`, {
+        method: 'PUT',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update document')
+      }
+
+      const data = await response.json()
+      if (data.status === 'success') {
+        toast({
+          title: "Document Updated",
+          description: "The document has been updated and re-analyzed successfully.",
+        })
+        setApplication((prev) => ({
+          ...prev,
+          documents: prev.documents.map(doc =>
+            doc.file_id === fileId ? { ...doc, issues: false } : doc
+          ),
+        }))
+      } else {
+        throw new Error(data.message || 'Failed to update document')
+      }
+    } catch (error) {
+      console.error('Error updating document:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update the document. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
 
   return (
     <div className="container mx-auto p-4 space-y-6">
@@ -270,6 +316,14 @@ export default function ApplicationReview() {
                   </div>
                   <div className="flex space-x-2">
                     <Button variant="ghost" size="sm" onClick={() => handleDocumentView(document.type)}>View</Button>
+                    {document.issues && (
+                      <div>
+                        <Input type="file" onChange={(e) => handleDocumentUpload(e, document.file_id)} className="sr-only" id={`file-upload-${document.file_id}`} />
+                        <label htmlFor={`file-upload-${document.file_id}`} className="cursor-pointer text-sm text-blue-600 hover:text-blue-800">
+                          Re-upload
+                        </label>
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}
