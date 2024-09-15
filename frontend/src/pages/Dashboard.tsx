@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SearchIcon, FilterIcon } from '@heroicons/react/outline'
+import { SearchIcon, FilterIcon, PlusIcon } from '@heroicons/react/outline'
+import { Button } from "@/components/ui/button"
+import NewCreditRequestModal from './NewCreditRequestModal'
 
 export default function Dashboard() {
   const [applications, setApplications] = useState([
@@ -9,9 +11,17 @@ export default function Dashboard() {
     // Add more mock data as needed
   ])
 
+  const [isNewRequestModalOpen, setIsNewRequestModalOpen] = useState(false)
+
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Applications Dashboard</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Applications Dashboard</h1>
+        <Button onClick={() => setIsNewRequestModalOpen(true)} className="flex items-center space-x-2">
+          <PlusIcon className="h-5 w-5" />
+          <span>New Credit Request</span>
+        </Button>
+      </div>
       <div className="flex justify-between items-center">
         <div className="relative">
           <input
@@ -71,6 +81,7 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
+      <NewCreditRequestModal isOpen={isNewRequestModalOpen} onClose={() => setIsNewRequestModalOpen(false)} />
     </div>
   )
 }
