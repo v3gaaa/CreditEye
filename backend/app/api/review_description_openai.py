@@ -18,6 +18,7 @@ async def get_review_desc(request_id: str):
             raise HTTPException(status_code=404, detail="Review description not found")
         
         #relevant_data = {"address": "San Pedro Garza", "phone": "1234567890", "email": "tec@gg.com"}
+        print(relevant_data)
         
         return {"should_approve": bool(aproval), "explanation": final_inference, "relevant_data": relevant_data}
     except Exception as e:

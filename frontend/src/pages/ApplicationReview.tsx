@@ -92,7 +92,6 @@ export default function ApplicationReview() {
         title: "Overview Generated",
         description: "The application overview has been generated successfully.",
       })
-      console.log( data)
     } catch (error) {
       console.error('Error generating overview:', error)
       toast({
@@ -103,6 +102,22 @@ export default function ApplicationReview() {
     } finally {
       setLoadingOverview(false)
     }
+  }
+
+  const renderRelevantData = (data) => {
+    if (typeof data === 'object' && !Array.isArray(data)) {
+      return (
+        <ul className="space-y-2 pl-4 border-l border-gray-200">
+          {Object.entries(data).map(([key, value]) => (
+            <li key={key} className="flex flex-col">
+              <span className="font-medium">{key}:</span>
+              {typeof value === 'object' ? renderRelevantData(value) : <span className="text-sm">{value}</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    return <span className="text-sm">{data}</span>
   }
 
   const handleRiskScoreChange = (e) => {
@@ -376,14 +391,7 @@ export default function ApplicationReview() {
               
               <div>
                 <p className="text-sm font-medium mb-1">Relevant Data:</p>
-                <ul className="grid grid-cols-2 gap-2">
-                  {Object.entries(applicationOverview.relevantData).map(([key, value]) => (
-                    <li key={key} className="flex items-center space-x-2">
-                      <Badge variant="outline">{key}</Badge>
-                      <span className="text-sm">{value}</span>
-                    </li>
-                  ))}
-                </ul>
+                {renderRelevantData(applicationOverview.relevantData)}
               </div>
             </>
           )}
