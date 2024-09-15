@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { UserIcon, BellIcon } from '@heroicons/react/outline'
 
