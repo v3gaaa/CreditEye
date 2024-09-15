@@ -8,8 +8,8 @@ async def get_request(request_id: str):
     """
     Returns basic information about a request.
     "name": "Spiegelin",
-    "status": "70",
-    "risk_score": 0.0
+    "status": "Under Review",
+    "risk_score": 0
     """
     try:
         request_data = get_request_data(request_id)  # Función que obtenga datos de Firestore

@@ -36,3 +36,21 @@ def get_request_data_all(request_id: str) -> Optional[dict]:
 
     return request_data
 
+def get_all_requests():
+    """
+    Retrieve all requests from Firestore.
+
+    Returns:
+        dict: A dictionary where keys are request IDs and values are request data.
+    """
+    try:
+        db = firestore.client()
+        requests_ref = db.collection("requests")
+        docs = requests_ref.stream()
+        
+        # Asegúrate de que los datos se devuelvan como un diccionario
+        all_requests = {doc.id: doc.to_dict() for doc in docs}
+        return all_requests
+    except Exception as e:
+        print(f"Error retrieving all requests: {e}")
+        return {}
