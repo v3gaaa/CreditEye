@@ -7,6 +7,7 @@ import ApplicationReview from './pages/ApplicationReview';
 import UserProfile from './pages/UserProfile';
 import DocumentUpload from './pages/DocumentUpload';
 import OnboardingGuide from './components/OnboardingGuide';
+import AddCreditRequest from './pages/AddCreditRequest';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/application/:id" element={<ApplicationReview />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/upload" element={<DocumentUpload />} />
+            <Route path="/add-credit-request" element={<AddCreditRequest />} />
           </Routes>
         </main>
         <Footer />
