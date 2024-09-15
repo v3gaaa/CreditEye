@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { CheckCircle, XCircle, AlertCircle, AlertTriangle, Loader } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
@@ -19,6 +18,7 @@ export default function ApplicationReview() {
   const [editingRiskScore, setEditingRiskScore] = useState(false)
   const [newRiskScore, setNewRiskScore] = useState(null)
   const { toast } = useToast()
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   useEffect(() => {
     const fetchApplicantInfo = async () => {
@@ -39,6 +39,7 @@ export default function ApplicationReview() {
           documents: Object.entries(data.documents).map(([type, details]) => ({
             type,
             issues: !details.legible,
+            file_id: type.replace(/ /g, '_')  // Assuming file_id is generated from type
           })),
         })
         setNewRiskScore(75) // Initial risk score
@@ -175,6 +176,35 @@ export default function ApplicationReview() {
     }
   }
 
+  const handleDocumentView = async (fileId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/get-document/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file_id: fileId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch document')
+      }
+
+      // Convert the response to a blob URL for previewing the document
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      setPreviewUrl(url)
+    } catch (error) {
+      console.error('Error fetching document:', error)
+      toast({
+        title: "Error",
+        description: "Failed to fetch the document. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+
   return (
     <div className="container mx-auto p-4 space-y-6">
       <h1 className="text-3xl font-bold">Application Review</h1>
@@ -238,7 +268,9 @@ export default function ApplicationReview() {
                     {getDocumentIcon(document.issues)}
                     <span>{document.type}</span>
                   </div>
-                  <Button variant="ghost" size="sm">View</Button>
+                  <div className="flex space-x-2">
+                    <Button variant="ghost" size="sm" onClick={() => handleDocumentView(document.type)}>View</Button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -311,6 +343,17 @@ export default function ApplicationReview() {
           Approve
         </Button>
       </div>
+
+      {previewUrl && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-2/3 h-3/4 overflow-auto">
+            <iframe src={previewUrl} className="w-full h-full" title="Document Preview"></iframe>
+            <div className="flex justify-end mt-4">
+              <Button onClick={() => setPreviewUrl(null)} variant="default">Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
