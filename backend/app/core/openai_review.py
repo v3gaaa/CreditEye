@@ -29,3 +29,21 @@ async def openai_review(extracted_text: str, tipo_documento) -> dict:
     except Exception as e:
         print(f"Error during OpenAI request: {e}")
         return {}
+
+async def openai_review_final(documents_info):
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Eres un experto en asesorar PYMEs para ayudarles a obtener créditos. Tu objetivo es analizar documentos de onboarding de empresas y extraer los insights más importantes, evaluando el riesgo financiero y proporcionando recomendaciones sobre su viabilidad crediticia. Estás especializado en evaluar información clave como historial financiero, solvencia, garantías, y perfil de riesgo."},
+                {"role": "user", "content": f"En base a esta informacion recabada de los documentos financieros de una pyme, determina si sería apta para un creditos. Aquí está la información:\n{documents_info}"}
+
+            ]
+        )
+
+        generated_text = completion.choices[0].message.content
+        return generated_text
+
+    except Exception as e:
+        print(f"Error during OpenAI request: {e}")
+        return {}
