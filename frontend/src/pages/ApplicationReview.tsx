@@ -34,6 +34,7 @@ export default function ApplicationReview() {
           name: data.name || 'Unknown',
           email: data.email || 'Unknown',
           income: `$${data.income.toLocaleString()}`,
+          status: data.status || 'Pending',
           riskScore: data.credit_score || 0,
           documents: Object.entries(data.documents).map(([type, details]) => ({
             type,
@@ -53,6 +54,19 @@ export default function ApplicationReview() {
     if (score < 50) return 'bg-green-100 text-green-800'
     if (score < 75) return 'bg-yellow-100 text-yellow-800'
     return 'bg-red-100 text-red-800'
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Approved':
+        return 'bg-green-100 text-green-800'
+      case 'Rejected':
+        return 'bg-red-100 text-red-800'
+      case 'More Info':
+        return 'bg-yellow-100 text-yellow-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
   }
 
   const getDocumentIcon = (issues) => {
@@ -121,9 +135,52 @@ export default function ApplicationReview() {
     }
   }
 
+  const handleStatusUpdate = async (newStatus) => {
+    const endpointMap = {
+      'Rejected': 'reject-request',
+      'More Info': 'request-more-info',
+      'Approved': 'approve-request'
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:8000/${endpointMap[newStatus]}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to ${newStatus.toLowerCase()} the request`)
+      }
+
+      const data = await response.json()
+      if (data.status === 'success') {
+        setApplication((prev) => ({ ...prev, status: newStatus }))
+        toast({
+          title: `${newStatus} Successful`,
+          description: `The request has been ${newStatus.toLowerCase()}ed successfully.`,
+        })
+      } else {
+        throw new Error(data.message || `Failed to ${newStatus.toLowerCase()} the request`)
+      }
+    } catch (error) {
+      console.error(`Error ${newStatus.toLowerCase()}ing request:`, error)
+      toast({
+        title: "Error",
+        description: `Failed to ${newStatus.toLowerCase()} the request. Please try again.`,
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
     <div className="container mx-auto p-4 space-y-6">
       <h1 className="text-3xl font-bold">Application Review</h1>
+      <Badge variant="outline" className={getStatusColor(application?.status)}>
+        {application?.status}
+      </Badge>
       
       <Card>
         <CardHeader>
@@ -241,15 +298,15 @@ export default function ApplicationReview() {
       </Card>
 
       <div className="flex justify-end space-x-4">
-        <Button variant="destructive">
+        <Button variant="destructive" onClick={() => handleStatusUpdate('Rejected')}>
           <XCircle className="mr-2 h-4 w-4" />
           Reject
         </Button>
-        <Button variant="secondary">
+        <Button variant="secondary" onClick={() => handleStatusUpdate('More Info')}>
           <AlertTriangle className="mr-2 h-4 w-4" />
           Request More Info
         </Button>
-        <Button variant="default">
+        <Button variant="default" onClick={() => handleStatusUpdate('Approved')}>
           <CheckCircle className="mr-2 h-4 w-4" />
           Approve
         </Button>

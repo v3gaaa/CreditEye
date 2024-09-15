@@ -3,7 +3,7 @@ from app.models.update_request_data import update_request_data  # Asegúrate de 
 
 router = APIRouter()
 
-@router.post("/reject-request/{request_id}/")
+@router.put("/reject-request/{request_id}/")
 async def reject_request(request_id: str):
     """
     Reject a request by setting the status to 'Rejected'.
@@ -19,7 +19,7 @@ async def reject_request(request_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/approve-request/{request_id}/")
+@router.put("/approve-request/{request_id}/")
 async def approve_request(request_id: str):
     """
     Approve a request by setting the status to 'Approved'.
@@ -35,7 +35,7 @@ async def approve_request(request_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.post("/request-more-info/{request_id}/")
+@router.put("/request-more-info/{request_id}/")
 async def request_more_info(request_id: str):
     """
     Approve a request by setting the status to 'Approved'.
