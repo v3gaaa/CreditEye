@@ -6,6 +6,8 @@ import ApplicationReview from './pages/ApplicationReview';
 import UserProfile from './pages/UserProfile';
 import OnboardingGuide from './components/OnboardingGuide';
 import AddCreditRequest from './pages/AddCreditRequest';
+import About from './pages/About';
+import ApiStatus from './pages/ApiStatus';
 
 export default function App() {
   return (
@@ -18,6 +20,11 @@ export default function App() {
             <Route path="/application/:id" element={<ApplicationReview />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/add-credit-request" element={<AddCreditRequest />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/api-status" element={<ApiStatus />} />
+
+            {/* 404 */}
+            <Route path="*" element={<h1>Not Found</h1>} />
           </Routes>
         </main>
         <Footer />

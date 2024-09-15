@@ -24,7 +24,7 @@ export default function ApplicationReview({ id = '123' }) {
       riskScore: 75,
       documents: [
         { type: 'ID', issues: false },
-        { type: 'Proof of Income', issues: true },
+        { type: 'Proof of Income', issues: false },
         { type: 'Bank Statement', issues: false },
       ]
     })

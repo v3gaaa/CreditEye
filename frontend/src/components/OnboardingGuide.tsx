@@ -1,8 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { XIcon } from '@heroicons/react/outline'
 
 export default function OnboardingGuide() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    // Check if the onboarding has been shown before
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding')
+
+    if (!hasSeenOnboarding) {
+      setIsOpen(true)
+    }
+  }, [])
+
+  const handleClose = () => {
+    // Mark the onboarding as seen
+    localStorage.setItem('hasSeenOnboarding', 'true')
+    setIsOpen(false)
+  }
 
   if (!isOpen) return null
 
@@ -26,7 +41,7 @@ export default function OnboardingGuide() {
             <button
               id="ok-btn"
               className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
             >
               Got it, thanks!
             </button>
