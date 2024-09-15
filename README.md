@@ -1,35 +1,35 @@
 # Credit Verification and Prequalification System
 
 ## Overview
-The Credit Verification and Prequalification System is designed to streamline the credit application process for banking and financial institutions. By leveraging modern web technologies, this system provides a user-friendly platform that enables bank analysts to efficiently review and manage credit applications, while also allowing applicants to easily submit their information and required documents.
 
-## Purpose
-The system aims to reduce the time and errors associated with manual credit verification by incorporating automated document analysis, risk assessment, and fraud detection. It provides an initial prequalification based on the information extracted from submitted documents, which serves as a first filter for approval.
+The Credit Verification and Prequalification System is a comprehensive solution designed to streamline the credit application process for banks and financial institutions. This system utilizes advanced technologies to automate the verification of documents, perform risk assessments, and provide prequalification evaluations for credit applicants. By reducing the need for manual reviews, the system enhances the efficiency and accuracy of the credit approval process, allowing institutions to process more applications in less time with fewer errors.
 
 ## Key Features
-- **Document Upload and Classification:** Users can upload necessary documents, such as IDs, proof of income, and bank statements, with options to select the type of document being uploaded.
-- **Dashboard for Bank Analysts:** A centralized dashboard for bank analysts to view, filter, and search through submitted applications. It includes a visual indicator for applications with issues.
-- **Application Review:** Detailed application review page with applicant information, document status, credit score, and risk assessment. Analysts can approve, reject, or request more information.
-- **Search and Filter Functionality:** Integrated search bar and filter options in the dashboard to enhance application management and accessibility.
-- **Responsive Design:** Fully responsive and accessible on various devices, ensuring a seamless experience for users.
+
+- **Document Upload and Classification**: Users can upload required documents such as IDs, proof of income, and bank statements. The system provides options to classify each document type, ensuring accurate processing and analysis.
+
+- **Automated Document Analysis**: Leveraging computer vision and OCR technology with Tesseract, the system extracts key information from uploaded documents. This includes validating the authenticity of documents and detecting any potential signs of fraud.
+
+- **Risk Assessment and Prequalification**: The backend, powered by FastAPI and ChatGPT, analyzes the extracted data against predefined rules and criteria. The system evaluates the applicant's risk score and provides an initial prequalification status, helping analysts make informed decisions quickly.
+
+- **Dashboard and Search Functionality**: A user-friendly dashboard allows analysts to manage and review applications efficiently. The dashboard includes search and filter functionalities, making it easy to find specific applications and focus on those requiring attention.
+
+- **Notifications and Account Management**: The system includes notification features to keep users informed about the status of their applications. Account management features allow users to update their information and adjust notification preferences.
+
+## Technologies Used
+
+- **Frontend**: Built using modern JavaScript frameworks with a responsive design to ensure accessibility across devices. Components are designed with Tailwind CSS for a clean and consistent UI.
+  
+- **Backend**: Developed with FastAPI, providing a robust and scalable API for handling application logic and data processing. The backend integrates Tesseract for OCR tasks and utilizes ChatGPT for intelligent data evaluation and recommendations.
+
+## Purpose
+
+This project is aimed at enhancing the credit approval workflow for banks by reducing the time and resources needed for document verification and applicant assessment. By automating key parts of the process and providing a comprehensive review dashboard, the system helps financial institutions make faster, more accurate credit decisions, ultimately improving customer satisfaction and operational efficiency.
 
 ## Target Audience
-The primary users of the system are bank and financial institution employees responsible for reviewing and approving credit applications. The secondary users are applicants who use the platform to submit their credit requests and monitor the status of their applications.
 
-## Technology Stack
-- **Frontend:** Developed using modern JavaScript frameworks with a focus on user experience and responsiveness.
-- **Backend:** Handles data processing, document analysis, and API integrations for credit verification and risk assessment.
-- **Security:** Incorporates best practices for data security, including secure file uploads, encrypted communication, and user authentication.
+The primary users of this system are banks, financial institutions, and credit unions looking to modernize their credit verification processes. It is tailored for use by credit analysts, loan officers, and other banking professionals involved in the credit approval pipeline.
 
-## Benefits
-- **Efficiency:** Automates the verification process, reducing the workload on bank analysts and speeding up decision-making.
-- **Accuracy:** Minimizes human errors in document review and risk assessment.
-- **Scalability:** Designed to handle a large number of applications, making it suitable for institutions of all sizes.
-- **Fraud Detection:** Early detection of potential frauds through advanced document analysis.
+---
 
-## Future Enhancements
-The system is planned to include advanced features such as machine learning-based risk scoring, integration with external credit bureaus, and more sophisticated fraud detection algorithms.
-
-## Contact
-For more information or to contribute to the project, please contact [your-email@example.com].
-
+By implementing this system, banks can leverage advanced AI and machine learning technologies to stay ahead of the competition, offering a seamless and efficient credit application experience to their clients.
