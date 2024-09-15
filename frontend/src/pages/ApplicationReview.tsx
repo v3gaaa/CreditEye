@@ -92,6 +92,7 @@ export default function ApplicationReview() {
         title: "Overview Generated",
         description: "The application overview has been generated successfully.",
       })
+      console.log( data)
     } catch (error) {
       console.error('Error generating overview:', error)
       toast({
