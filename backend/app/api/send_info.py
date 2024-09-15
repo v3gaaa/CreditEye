@@ -1,6 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from app.core.firestore_handler import save_request_data
 from app.models.upload_pdfs import upload_pdfs_to_storage
+from app.core.vision_computational import extract_text
+from app.core.openai_review import openai_review
 import uuid
 
 router = APIRouter()
@@ -37,6 +39,14 @@ async def send_info(
     
     try:
         pdf_urls = upload_pdfs_to_storage(documents, request_id)
+        """
+        openai_response = {}
+        for pdf_url in pdf_urls:
+            extracted_text = extract_text(request_id, pdf_url["file_id"])
+            openai_response = await openai_review(extracted_text)
+            openai_response[pdf_url["file_id"]] = openai_response
+        save_request_data(request_id, {"openai_review": openai_response}, merge=True)
+        """
     except HTTPException as e:
         return {"status": "error", "detail": str(e)}
     

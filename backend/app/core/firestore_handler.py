@@ -1,11 +1,12 @@
 from firebase_config import db
 
-def save_request_data(request_id, data):
+def save_request_data(request_id, data, merge=False):
     """
     Guarda la información del request en Firestore.
+    Si algo falla quitar merge
     """
     doc_ref = db.collection('requests').document(request_id)
-    doc_ref.set(data)
+    doc_ref.set(data, merge=merge)
 
 def get_request_data(request_id):
     """

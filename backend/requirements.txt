@@ -8,3 +8,5 @@ starlette
 pytesseract
 opencv-python
 pdf2image
+openai
+aiohttp
