@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import json
 
 # Cargar las variables del archivo .env
 load_dotenv()
@@ -74,14 +75,22 @@ async def openai_review_relevant_data(documents_info):
             model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": "Eres un experto en asesorar PYMEs para ayudarles a obtener créditos. Tu objetivo es analizar documentos de onboarding de empresas y extraer los insights más importantes, evaluando el riesgo financiero y proporcionando recomendaciones sobre su viabilidad crediticia. Estás especializado en evaluar información clave como historial financiero, solvencia, garantías, y perfil de riesgo."},
-                {"role": "user", "content": f"En base a esta informacion recabada de los documentos financieros y personales de una pyme, necesito que me des alguna data muy relevante que encuentres de los documentos. Aquí está la información:\n{documents_info}. Responde en formato de json, como este, dependiendo de que tanto o poco encuentres: {relevant_data}"}
+                {"role": "user", "content": f"En base a esta informacion recabada de los documentos financieros y personales de una pyme, necesito que me des alguna data muy relevante que encuentres de los documentos. Aquí está la información:\n{documents_info}. Responde en formato de json, como este, dependiendo de que tanto o poco encuentres: {relevant_data}. Es decir, el json solo puede tener una anidacion de 1 como maximo, y los objetos son solo el nombre de la data y el valor."}
 
             ],
             response_format={"type": "json_object"}
         )
 
         generated_text = completion.choices[0].message.content
-        return generated_text
+        try:
+            json_data = json.loads(generated_text)
+        except json.JSONDecodeError:
+            # Si no se puede decodificar, devolver un error o manejarlo
+            print("Error: OpenAI response is not valid JSON.")
+            return {}
+
+        # Retornar el JSON ya formateado correctamente
+        return json_data
 
     except Exception as e:
         print(f"Error during OpenAI request: {e}")
