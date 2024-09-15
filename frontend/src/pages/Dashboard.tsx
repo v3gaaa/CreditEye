@@ -4,7 +4,7 @@ import { SearchIcon, FilterIcon, PlusIcon } from '@heroicons/react/outline'
 
 export default function Dashboard() {
   const [applications, setApplications] = useState([
-    { id: 1, name: 'John Doe', status: 'Under Review', riskScore: 75, hasIssues: false },
+    { id: 1, name: 'John Doe', status: 'Under Review', riskScore: 0, hasIssues: false },
     { id: 2, name: 'Jane Smith', status: 'Submitted', riskScore: 60, hasIssues: true },
   ])
   const [searchTerm, setSearchTerm] = useState('')
