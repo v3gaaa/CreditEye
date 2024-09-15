@@ -1,0 +1,34 @@
+# Entorno virtual
+venv/
+.env
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+
+# Archivos de compilación de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Archivos de log
+*.log
+
+# Credenciales y archivos sensibles
+firebase_credentials.json
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de editor
+*~
+*.swp
+
+# Dependencias instaladas
+requirements.txt  # Si estás utilizando un archivo requirements.txt para dependencias, debes asegurarte de que esté incluido en el repositorio. Si no usas requirements.txt, descomenta la línea a continuación.
+#venv/
+
+config/

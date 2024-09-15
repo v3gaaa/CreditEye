@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+firebase-admin
+python-multipart
+pydantic
+python-dotenv
+starlette
