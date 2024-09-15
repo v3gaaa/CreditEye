@@ -7,7 +7,7 @@ import uuid
 
 router = APIRouter()
 
-@router.post("/update-review-info/{request_id}/")
+@router.put("/update-review-info/{request_id}/")
 async def update_request(
     request_id: str,
     name: str = Form(...),
@@ -15,6 +15,7 @@ async def update_request(
     phone: str = Form(...),
     annual_income: float = Form(...),
     risk_score: int = Form(...),
+    status: str = Form(...),
     documents: list[UploadFile] = File(...)
 ):
     """
@@ -35,6 +36,7 @@ async def update_request(
             "phone": phone,
             "annual_income": annual_income,
             "risk_score": risk_score,
+            "status": status
         }
         save_request_data(request_id, request_data)
         
