@@ -57,6 +57,12 @@ async def get_review_info(request_id: str):
         "Abraham Silberschatz-Operating System Concepts (9th,2012_12).pdf": {
             "legible": true
         }
+    },
+    shouldApprove: True,
+    explanation: "The documents are legible and the risk score is low.",
+    relevantData: {
+        "income Verifed": "Yes
+        }
     }
     """
     # ID
@@ -87,4 +93,6 @@ async def get_review_info(request_id: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
 
