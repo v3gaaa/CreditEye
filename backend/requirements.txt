@@ -5,3 +5,6 @@ python-multipart
 pydantic
 python-dotenv
 starlette
+pytesseract
+opencv-python
+pdf2image
