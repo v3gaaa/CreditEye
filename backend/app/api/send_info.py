@@ -3,6 +3,7 @@ from app.core.firestore_handler import save_request_data
 from app.models.upload_pdfs import upload_pdfs_to_storage
 from app.core.vision_computational import extract_text
 from app.core.openai_review import openai_review
+from app.models.update_document_data import update_document_data
 import uuid
 
 router = APIRouter()
@@ -39,14 +40,23 @@ async def send_info(
     
     try:
         pdf_urls = upload_pdfs_to_storage(documents, request_id)
-        """
+        print(pdf_urls)
+
         openai_response = {}
         for pdf_url in pdf_urls:
             extracted_text = extract_text(request_id, pdf_url["file_id"])
-            openai_response = await openai_review(extracted_text)
-            openai_response[pdf_url["file_id"]] = openai_response
-        save_request_data(request_id, {"openai_review": openai_response}, merge=True)
-        """
+            openai_response = await openai_review(extracted_text, pdf_url["file_id"])
+            print(openai_response)
+
+            legible = True if len(openai_response) > 50 else False
+
+            updated_data = {
+                'legible': legible,
+                'openAi_response': openai_response
+            }
+
+            update_document_data(request_id, pdf_url["file_id"], updated_data)
+
     except HTTPException as e:
         return {"status": "error", "detail": str(e)}
     

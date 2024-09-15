@@ -12,33 +12,19 @@ api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 # Función para realizar la solicitud de chat
-async def openai_review(extracted_text: str) -> dict:
+async def openai_review(extracted_text: str, tipo_documento) -> dict:
     try:
         completion = client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are an assistant that extracts keywords from text."},
-                {"role": "user", "content": f"Extract keywords from the following text:\n{extracted_text}"}
+                {"role": "system", "content": "Eres un experto en asesorar PYMEs para ayudarles a obtener créditos. Tu objetivo es analizar documentos de onboarding de empresas y extraer los insights más importantes, evaluando el riesgo financiero y proporcionando recomendaciones sobre su viabilidad crediticia. Estás especializado en evaluar información clave como historial financiero, solvencia, garantías, y perfil de riesgo."},
+                {"role": "user", "content": f"Analiza el siguiente documento de {tipo_documento}. Este documento es parte del proceso de evaluación de una PYME para un crédito. Tu trabajo es proporcionar un análisis detallado, resaltando los factores clave para la aprobación del crédito, riesgos financieros, posibles puntos débiles o fortalezas, y cualquier recomendación que consideres relevante para la toma de decisiones. Aquí está el texto:\n{extracted_text}"}
+
             ]
         )
 
-        generated_text = completion.choices[0].message.content.strip()
-        keywords = [word.strip() for word in generated_text.split(',')]
-
-        keyword_descriptions = {}
-        for keyword in keywords:
-            description_response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an assistant that provides detailed descriptions of keywords."},
-                    {"role": "user", "content": f"Provide a description for the keyword: {keyword}"}
-                ]
-            )
-            
-            description_text = description_response.choices[0].message.content.strip()
-            keyword_descriptions[keyword] = description_text
-
-        return keyword_descriptions
+        generated_text = completion.choices[0].message.content
+        return generated_text
 
     except Exception as e:
         print(f"Error during OpenAI request: {e}")
