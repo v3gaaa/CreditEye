@@ -33,3 +33,105 @@ The primary users of this system are banks, financial institutions, and credit u
 ---
 
 By implementing this system, banks can leverage advanced AI and machine learning technologies to stay ahead of the competition, offering a seamless and efficient credit application experience to their clients.
+
+## Installation
+
+### Clone the repository
+```bash
+git clone https://github.com/v3gaaa/reto-softek
+```
+
+### Backend Setup
+#### Step 1: Create a Firebase project:
+- In Firebase, under the Build section, enable Firestore and Storage.
+
+#### Step 2: Obtain Firebase Credentials JSON (Private Key)
+- Go to the Firebase Console.
+- Navigate to Project Settings.
+- Go to Service Accounts.
+- Generate a new private key.
+- Save the downloaded file in a `/config` folder inside the `/backend` directory.
+```bash
+mkdir /config
+```
+
+#### Step 3: Setup .env file
+- Create a `.env` file in the `/backend` folder:
+```bash
+touch .env
+```
+
+- Add the following environment variables:
+```bash
+FIREBASE_CREDENTIALS_PATH=/path-to-private-key.json # Inside /config
+FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
+DATABASE_URL=https://your-project-id.firebaseio.com/
+PORT=8000
+OPEN_API_KEY="sk-..."
+```
+
+#### Step 4: Install Requirements
+- Create a virtual environment:
+```bash
+python -m venv venv
+```
+
+- Activate the virtual environment:
+  - On Windows:
+```bash
+venv\Scripts\activate
+```
+
+  - On Mac/Linux:
+```bash
+source venv/bin/activate
+```
+- Install dependencies from `requirements.txt`
+```bash
+pip install -r requirements.txt
+```
+
+**EXTRA**: In some cases, you may need to install these two dependencies separately:
+- For MacOS:
+```bash
+brew install pdf2image
+brew install tesseract
+```
+
+- For Windows/Linux: Install pdf2image and tesseract through your preferred package manager or directly from their websites.
+
+### Frontend Setup
+#### Step 1: Navigate to the `/frontend`repository:
+Go into the frontend folder where the React Vite project is located:
+```bash
+cd /frontend
+```
+
+#### Step 2: Install dependencies
+Install the necessary packages using npm:
+```bash
+npm install
+```
+
+
+## Usage
+### Starting the FastAPI server
+- Navigate to the `/backend` directory:
+```bash
+cd /backend
+```
+- Run the FastAPI server:
+```bash
+uvicorn app.main:app --reload
+```
+
+### Starting the Vite App
+- Navigate to the `/frontend` directory:
+```bash
+cd /frontend
+```
+
+- Run the vite app:
+```bash
+npm run dev
+```
