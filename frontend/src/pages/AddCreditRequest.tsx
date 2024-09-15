@@ -199,7 +199,7 @@ export default function AddCreditRequest() {
       </CardContent>
       <CardFooter>
         <Button 
-          className="w-full" 
+          className="w-full " 
           onClick={handleSubmit}
           disabled={loading}
         >
