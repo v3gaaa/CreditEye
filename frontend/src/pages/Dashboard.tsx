@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { SearchIcon, FilterIcon, PlusIcon } from '@heroicons/react/outline'
 
 export default function Dashboard() {
-  const [applications, setApplications] = useState([])
+  const [applications, setApplications] = useState<{ id: number; name: string; status: string; riskScore: number; hasIssues: boolean }[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showIssuesOnly, setShowIssuesOnly] = useState(false)
 
@@ -11,11 +11,11 @@ export default function Dashboard() {
     // Fetch all requests from the backend
     const fetchApplications = async () => {
       try {
-        const response = await fetch('http://localhost:8000/get-all-requests') // Update with your API URL
+        const response = await fetch('http://localhost:8000/get-all-requests')
         const data = await response.json()
         
         // Map the data to match the structure used in the component
-        const mappedApplications = data.map(app => ({
+        const mappedApplications = data.map((app: any) => ({
           id: app.id,
           name: app.name || 'Unknown',
           status: app.status || 'Unknown',
@@ -32,7 +32,7 @@ export default function Dashboard() {
     fetchApplications()
   }, [])
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
   }
 

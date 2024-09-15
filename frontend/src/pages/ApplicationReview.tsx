@@ -74,28 +74,34 @@ export default function ApplicationReview() {
     return issues ? <AlertCircle className="h-5 w-5 text-yellow-500" /> : <CheckCircle className="h-5 w-5 text-green-500" />
   }
 
-  const handleGenerateOverview = () => {
-    const hasIssues = application.documents.some((doc) => doc.issues)
+  const handleGenerateOverview = async () => {
+    try {
+      setLoadingOverview(true)
+      const response = await fetch(`http://localhost:8000/get-review-desc/${id}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch review description')
+      }
+      const data = await response.json()
 
-    if (hasIssues) {
-      setShowModal(true)
-      return
-    }
-
-    setLoadingOverview(true)
-
-    setTimeout(() => {
       setApplicationOverview({
-        shouldApprove: true,
-        explanation: 'This decision is based on a strong credit history and a low debt-to-income ratio.',
-        relevantData: {
-          'Income Verified': 'Yes',
-          'Debt-to-Income Ratio': 'Low',
-          'Credit History': 'Good',
-        },
+        shouldApprove: data.should_approve,
+        explanation: data.explanation,
+        relevantData: data.relevant_data,
       })
+      toast({
+        title: "Overview Generated",
+        description: "The application overview has been generated successfully.",
+      })
+    } catch (error) {
+      console.error('Error generating overview:', error)
+      toast({
+        title: "Error",
+        description: "Failed to generate application overview. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
       setLoadingOverview(false)
-    }, 2000)
+    }
   }
 
   const handleRiskScoreChange = (e) => {
