@@ -6,13 +6,28 @@ export default function Dashboard() {
   const [applications, setApplications] = useState([
     { id: 1, name: 'John Doe', status: 'Under Review', riskScore: 75, hasIssues: false },
     { id: 2, name: 'Jane Smith', status: 'Submitted', riskScore: 60, hasIssues: true },
-    // Add more mock data as needed
   ])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showIssuesOnly, setShowIssuesOnly] = useState(false)
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  const handleFilterToggle = () => {
+    setShowIssuesOnly((prev) => !prev)
+  }
+
+  const filteredApplications = applications.filter((app) => {
+    const matchesSearch = app.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = showIssuesOnly ? app.hasIssues : true
+    return matchesSearch && matchesFilter
+  })
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Applications Dashboard</h1>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
         <Link
           to="/add-credit-request"
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -21,18 +36,25 @@ export default function Dashboard() {
           Add Credit Request
         </Link>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center space-x-4">
         <div className="relative">
           <input
             type="text"
-            placeholder="Search applications..."
-            className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Search..."
+            className="w-full py-2 pl-10 pr-4 text-gray-700 bg-gray-100 rounded-full focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
-          <SearchIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
+          <SearchIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
         </div>
-        <button className="flex items-center space-x-2 bg-white p-2 rounded-lg shadow hover:bg-gray-50">
-          <FilterIcon className="h-5 w-5 text-gray-600" />
-          <span>Filter</span>
+        <button
+          onClick={handleFilterToggle}
+          className={`flex items-center space-x-2 p-2 rounded-lg shadow ${
+            showIssuesOnly ? 'bg-blue-500 text-white' : 'bg-white hover:bg-gray-50'
+          }`}
+        >
+          <FilterIcon className="h-5 w-5" />
+          <span>{showIssuesOnly ? 'Showing Issues' : 'Show Issues Only'}</span>
         </button>
       </div>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -46,7 +68,7 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {applications.map((app) => (
+            {filteredApplications.map((app) => (
               <tr key={app.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
