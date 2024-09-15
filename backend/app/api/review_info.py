@@ -45,6 +45,7 @@ async def get_review_info(request_id: str):
     "email": "test@test.com",
     "income": 10000000.0,
     "credit_score": 0.0,
+    "risk_score": 0.0,
     "phone": "3333333333",
     "documents": {
         "Elements of Python Programming.pdf": {
@@ -58,6 +59,9 @@ async def get_review_info(request_id: str):
         }
     }
     """
+    # ID
+    # Proof of Address
+    # Bank Statement
     try:
         request_data = get_request_data_all(request_id)  # Función que obtenga datos de Firestore
         if not request_data:
@@ -68,7 +72,7 @@ async def get_review_info(request_id: str):
         document_status = {}
         for doc_name, doc_content in documents.items():
             #document_status[doc_name] = {
-            document_status[doc_content["filename"]] = {
+            document_status[doc_name] = {
                 #"content": doc_content["filename"], #doc_content da todo
                 "legible": True  # Lógica para determinar si es legible
             }

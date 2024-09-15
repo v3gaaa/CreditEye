@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 #from app.api import upload, evaluation, vision, health, send_info
-from app.api import health, send_info, basic_request, review_info, get_document
+from app.api import health, send_info, basic_request, review_info, get_document, edit_risk_score, approve_reject_request
 import uvicorn
 from dotenv import load_dotenv
 import os
@@ -18,6 +18,8 @@ app.include_router(send_info.router)
 app.include_router(basic_request.router)
 app.include_router(review_info.router)
 app.include_router(get_document.router)
+app.include_router(edit_risk_score.router)
+app.include_router(approve_reject_request.router)
 
 
 if __name__ == "__main__":

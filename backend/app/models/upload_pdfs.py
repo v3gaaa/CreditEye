@@ -9,12 +9,20 @@ def upload_pdfs_to_storage(files: list[UploadFile], request_id: str):
     pdf_urls = []
     bucket = storage.bucket()  # Obtén el bucket de Firebase Storage
 
+    count = 0
     for file in files:
         if file.content_type != "application/pdf":
             raise HTTPException(status_code=400, detail=f"{file.filename} is not a PDF")
         
         # Generar un nombre único para cada archivo
-        file_id = str(uuid.uuid4()) + ".pdf"
+        #file_id = str(uuid.uuid4()) + ".pdf"
+        if count == 0:
+            file_id = "ID"
+        elif count == 1:
+            file_id = "Proof of Address"
+        elif count == 2:
+            file_id = "Bank Statement"
+        count += 1
         blob = bucket.blob(f"{request_id}/{file_id}")  # Guardar en una carpeta con el nombre del request_id
         
         # Guarda el archivo en Firebase Storage

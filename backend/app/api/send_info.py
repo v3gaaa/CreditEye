@@ -11,8 +11,8 @@ async def send_info(
     email: str = Form(...),
     phone: str = Form(...),
     annual_income: float = Form(...),
-    status: str = Form(...),
-    risk_score: float = Form(...),
+    status: str = "Under Review",
+    risk_score: int = 0,
     documents: list[UploadFile] = File(...)
 ):
     """
@@ -21,8 +21,6 @@ async def send_info(
     email: 
     phone: 
     annual_income: 
-    status:
-    risk_score:
     documents: list of PDF files
     """
     request_id = str(uuid.uuid4())
