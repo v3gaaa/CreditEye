@@ -4,7 +4,6 @@ import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import ApplicationReview from './pages/ApplicationReview';
 import UserProfile from './pages/UserProfile';
-import DocumentUpload from './pages/DocumentUpload';
 import OnboardingGuide from './components/OnboardingGuide';
 import AddCreditRequest from './pages/AddCreditRequest';
 
@@ -18,7 +17,6 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/application/:id" element={<ApplicationReview />} />
             <Route path="/profile" element={<UserProfile />} />
-            <Route path="/upload" element={<DocumentUpload />} />
             <Route path="/add-credit-request" element={<AddCreditRequest />} />
           </Routes>
         </main>
