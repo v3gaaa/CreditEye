@@ -38,7 +38,7 @@ By implementing this system, banks can leverage advanced AI and machine learning
 
 ### Clone the repository
 ```bash
-git clone https://github.com/fridaplatform-hackmty24/Ingeniebrios.git
+git clone https://github.com/v3gaaa/CreditEye.git
 ```
 
 ### Backend Setup
