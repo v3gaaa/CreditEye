@@ -1,8 +1,4 @@
-# Credit Verification and Prequalification System
-
-## Overview
-
-The Credit Verification and Prequalification System is a comprehensive solution designed to streamline the credit application process for banks and financial institutions. This system utilizes advanced technologies to automate the verification of documents, perform risk assessments, and provide prequalification evaluations for credit applicants. By reducing the need for manual reviews, the system enhances the efficiency and accuracy of the credit approval process, allowing institutions to process more applications in less time with fewer errors.
+# CreditEye
 
 ## Key Features
 
